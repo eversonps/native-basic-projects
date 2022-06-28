@@ -5,9 +5,18 @@ export default function App() {
     <View style={styles.container}>
       <Text>Olá mundoo!</Text>
       <Text style={{ color: 'red', fontSize: 18, margin: 15}}>Meu primeiro app!</Text>
-      <Image source={{uri: "https://logodetimes.com/wp-content/uploads/sao-paulo.png"}} style={{width: 300, height: 200}}/>
+      <Logo largura={200} altura={200} descricao="São Paulo FC"/>
     </View>
   );
+}
+
+function Logo({largura, altura, descricao}) {
+  return (
+    <View>
+       <Image source={{uri: "https://logodetimes.com/wp-content/uploads/sao-paulo.png"}} style={{width: largura, height: altura}}/>
+       <Text>{descricao}</Text>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -18,3 +27,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+
