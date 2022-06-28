@@ -1,22 +1,19 @@
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
+import { useState } from 'react';
 
 export default function App() {
+  const [name, setName] = useState("")
+
+  const entrar = (nome) => {
+    setName("Everson")
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Olá mundoo!</Text>
-      <Text style={{ color: 'red', fontSize: 18, margin: 15}}>Meu primeiro app!</Text>
-      <Logo largura={200} altura={200} descricao="São Paulo FC"/>
+      <Text>{name}</Text>
+      <Button title='Entrar' onPress={() => entrar("Everson")}/>
     </View>
   );
-}
-
-function Logo({largura, altura, descricao}) {
-  return (
-    <View>
-       <Image source={{uri: "https://logodetimes.com/wp-content/uploads/sao-paulo.png"}} style={{width: largura, height: altura}}/>
-       <Text>{descricao}</Text>
-    </View>
-  )
 }
 
 const styles = StyleSheet.create({
