@@ -9,9 +9,11 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text>{name}</Text>
-      <Button title='Entrar' onPress={() => entrar("Everson")}/>
+    <View style={[styles.container, styles.area]}>
+      <Text style={styles.textoPrincipal}>Texto 1</Text>
+      <Text>Texto 2</Text>
+      <Text>Texto 3</Text>
+      <Text style={styles.textoPrincipal}>Texto 4</Text>
     </View>
   );
 }
@@ -23,6 +25,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  area: {
+    backgroundColor: 'lightgray'
+  },
+  textoPrincipal: {
+    fontSize: 25,
+    color: 'red'
+  }
 });
 
 
