@@ -1,15 +1,47 @@
 import { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, FlatList, View, Text } from 'react-native';
 
 export default function App() {
+  const [feed, setFeed] = useState([{
+    id: '1',
+    nome: 'Everson',
+    idade: 19,
+    email: 'everson@gmail.com'
+  },
+  {
+    id: '2',
+    nome: 'João',
+    idade: 24,
+    email: 'joao@gmail.com'
+  },
+  {
+    id: '3',
+    nome: 'Pedro',
+    idade: 12,
+    email: 'pedro@gmail.com'
+  },
+  {
+    id: '4',
+    nome: 'Paulo',
+    idade: 35,
+    email: 'paulo@gmail.com'
+  }])
+
   return (
-      <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-        <View style={styles.box1}></View>
-        <View style={styles.box2}></View>
-        <View style={styles.box3}></View>
-        <View style={styles.box4}></View>
-      </ScrollView>
+    <View style={styles.container}>
+      <FlatList keyExtractor={(item) => item.id} data={feed} renderItem={({ item }) => <Pessoa data={item} />}></FlatList>
+    </View>
   );
+}
+
+function Pessoa({ data }) {
+  return (
+    <View style={styles.areaPessoa}>
+      <Text style={styles.textoPessoa}>{data.nome}</Text>
+      <Text style={styles.textoPessoa}>{data.email}</Text>
+      <Text style={styles.textoPessoa}>{data.idade}</Text>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -18,26 +50,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  box1: {
-    backgroundColor: 'red',
-    height: 250,
-    width: 150
+  areaPessoa: {
+    backgroundColor: '#222',
+    marginTop: 15
   },
-  box2: {
-    backgroundColor: 'blue',
-    height: 250,
-    width: 150
-  },
-  box3: {
-    backgroundColor: 'green',
-    height: 250,
-    width: 150
-  },
-  box4: {
-    backgroundColor: 'orange',
-    height: 250,
-    width: 150
+  textoPessoa: {
+    color: '#FFF',
+    fontSize: 20
   }
 });
-
-
