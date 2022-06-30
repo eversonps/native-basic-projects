@@ -1,33 +1,15 @@
 import { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import Slider from '@react-native-community/slider';
 
 export default function App() {
-  const [pizzas, setPizzas] = useState({
-    index: 0,
-    data: [
-      { key: 0, nome: 'Strogonoff', valor: 35.90 },
-      { key: 1, nome: 'Calabresa', valor: 37.90 },
-      { key: 2, nome: 'Portuguesa', valor: 32.90 }
-    ]
-  })
+  const [valor, setValor] = useState(0)
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>Menu Pizza</Text>
-
-      <Picker style={styles.picker} selectedValue={pizzas.index} onValueChange={(itemValue, itemIndex) => setPizzas({
-        ...pizzas,
-        index: itemValue
-      })}>
-        {pizzas.data.map(pizza => {
-          return <Picker.Item key={pizza.key} value={pizza.key} label={pizza.nome} />
-        })}
-
-      </Picker>
-
-      <Text style={styles.pizzas}>Voce escolheu a pizza sabor {pizzas.data[pizzas.index].nome}</Text>
-      <Text style={styles.pizzas}>R$: {pizzas.data[pizzas.index].valor.toFixed(2)}</Text>
+      <Slider style={styles.slider} minimumValue={0} maximumValue={100} value={0} onValueChange={(valor) => setValor(valor)}/>
+      <Text style={styles.texto}>Voce tem {valor.toFixed(2)} kg</Text>
     </View>
   );
 }
@@ -38,15 +20,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  logo: {
-    fontSize: 28,
-    fontWeight: 'bold'
+  slider: {
+    width: '80%',
   },
-  pizzas: {
-    fontSize: 28,
-    marginTop: 15
-  },
-  picker: {
-    width: 200
+  texto: {
+    fontSize: 20
   }
 });
