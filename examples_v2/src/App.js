@@ -1,43 +1,43 @@
-import { useState } from 'react';
-import { StyleSheet, View, Text, Switch, TextInput, Button, Image, TouchableOpacity, FlatList } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, Switch, TextInput, Button, Image, TouchableOpacity, FlatList, Keyboard } from 'react-native';
 
-import Lista from './components/Lista';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function App() {
-  const [feed, setFeed] = useState([
-    {
-      id: '1',
-      nome: 'Everson',
-      descricao: 'Ótimo dia! :)',
-      imgPerfil: 'https://www.amambainoticias.com.br/wp-content/uploads/media/images/2231/141495/5ee0ec7b76ae87904f4309c53aae5b5311d75b2d1a433.jpg',
-      imgPublicacao: 'https://pbs.twimg.com/profile_images/1511742442973929484/BDUtYAvu_400x400.jpg',
-      like: false,
-      qtdLike: 0
-    },
-    {
-      id: '2',
-      nome: 'Everson',
-      descricao: 'Ótimo dia! :)',
-      imgPerfil: 'https://www.amambainoticias.com.br/wp-content/uploads/media/images/2231/141495/5ee0ec7b76ae87904f4309c53aae5b5311d75b2d1a433.jpg',
-      imgPublicacao: 'https://pbs.twimg.com/profile_images/1511742442973929484/BDUtYAvu_400x400.jpg',
-      like: false,
-      qtdLike: 3
-    }
-  ])
+  const [nome, setNome] = useState('Everson')
+  const [input, setInput] = useState('')
+
+  function gravaNome(){
+    setNome(input)
+    alert('salvo com sucesso!')
+    Keyboard.dismiss()
+  }
+
+  useEffect(async () => {
+    await AsyncStorage.setItem('nome', nome)
+  }, [nome])
+
+  useEffect(async () => {
+    await AsyncStorage.getItem('nome').then((value) => {
+      setNome(value)
+    })
+  }, [])
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity>
-          <Image source={require('./img/logo.png')} style={styles.logo} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Image source={require('./img/send.png')} style={styles.send} />
+      <View style={styles.viewInput}>
+        <TextInput
+          style={styles.input}
+          value={input}
+          underlineColorAndroid="transparent"
+          onChangeText={(text) => setInput(text)}
+        />
+
+        <TouchableOpacity onPress={gravaNome}>
+          <Text style={styles.botao}>+</Text>
         </TouchableOpacity>
       </View>
 
-      <FlatList showsHorizontalScrollIndicator={true}
-        data={feed}
-        keyExtractor={ (item) => item.id }
-        renderItem={({ item }) => <Lista item={item}/>} />
+      <Text style={styles.nome}>{nome}</Text>
     </View >
   );
 }
@@ -46,23 +46,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    marginTop: 30,
-    height: 55,
-    backgroundColor: '#FFF',
+  viewInput: {
+    marginTop: 40,
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 5,
-    borderBottomWidth: 0.2,
-    shadowColor: '#000',
-    elevation: 1
+    alignItems: 'center'
   },
-  logo: {
-
+  input: {
+    width: 350,
+    height: 40, 
+    borderColor: '#000',
+    borderWidth: 1,
+    padding: 10
   },
-  send: {
-    width: 23,
-    height: 23
+  botao: {
+    backgroundColor: '#222',
+    color: '#FFF',
+    height: 40,
+    padding: 10
+  },
+  nome: {
+    marginTop: 15,
+    fontSize: 30,
+    textAlign: 'center'
   }
 });
