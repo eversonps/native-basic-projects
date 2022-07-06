@@ -4,20 +4,11 @@ import { StyleSheet, View, Text, Switch, TextInput, Button, Modal, Image, Toucha
 export default function App() {
   const [sizeAnimado, setSizeAnimado] = useState({
     width: new Animated.Value(150),
-    height: new Animated.Value(50),
-    opacidadeAnimada: new Animated.Value(0)
+    height: new Animated.Value(50)
   })
 
-  Animated.sequence([
-    Animated.timing(
-      sizeAnimado.opacidadeAnimada,
-      {
-        toValue: 1,
-        duration: 2000
-      }
-    ),
-
-    Animated.parallel([
+  Animated.loop(
+    Animated.sequence([
       Animated.timing(
         sizeAnimado.width,
         {
@@ -26,34 +17,19 @@ export default function App() {
         }
       ),
       Animated.timing(
-        sizeAnimado.height,
+        sizeAnimado.width,
         {
           toValue: 150,
           duration: 2000
         }
       )
-    ]),
-
-    Animated.timing(
-      sizeAnimado.opacidadeAnimada,
-      {
-        toValue: 0,
-        duration: 2000
-      }
-    ),
-
-  ]).start()
-
-  // Animated.timing(
-  //   sizeAnimado.width, {
-  //     toValue: 300,
-  //     duration: 2000
-  //   }
-  // ).start()
+    ])
+    
+  ).start()
 
   return (
     <View style={styles.container}>
-      <Animated.View style={{ width: sizeAnimado.width, height: sizeAnimado.height, backgroundColor: '#4169E1', justifyContent: 'center', opacity: sizeAnimado.opacidadeAnimada }}>
+      <Animated.View style={{ width: sizeAnimado.width, height: sizeAnimado.height, backgroundColor: '#4169E1', justifyContent: 'center' }}>
         <Text style={{ color: '#FFFFFF', fontSize: 22, textAlign: 'center' }}>Carregando...</Text>
       </Animated.View>
     </View >
