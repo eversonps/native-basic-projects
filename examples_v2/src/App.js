@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, Text, Switch, TextInput, Button, Modal, Image, TouchableOpacity, FlatList, Keyboard, ActivityIndicator, Animated } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,14 +15,16 @@ export default function App() {
     if(nomeStorage !== null){
       setNome(nomeStorage)
     }
-
   }, [])
+
+  const letrasNomes = useMemo(() => (nome.length), [nome])
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.btn} onPress={() => setNome('Everson (alterado)')}>
         <Text style={styles.btnText}>Altera nome</Text>
       </TouchableOpacity>
       <Text style={styles.texto}>Olá {nome}</Text>
+      <Text style={styles.texto}>Olá {letrasNomes}</Text>
     </View >
   );
 }
