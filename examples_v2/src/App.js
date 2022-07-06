@@ -1,9 +1,22 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Switch, TextInput, Button, Modal, Image, TouchableOpacity, FlatList, Keyboard, ActivityIndicator, Animated } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function App() {
   const [nome, setNome] = useState('Everson')
 
+  useEffect(async () => {
+    await AsyncStorage.setItem('nome', nome)
+  }, [nome])
+
+  useEffect(async () => {
+    let nomeStorage = await AsyncStorage.getItem('nome')
+
+    if(nomeStorage !== null){
+      setNome(nomeStorage)
+    }
+
+  }, [])
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.btn} onPress={() => setNome('Everson (alterado)')}>
