@@ -2,24 +2,14 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Switch, TextInput, Button, Modal, Image, TouchableOpacity, FlatList, Keyboard, ActivityIndicator, Animated } from 'react-native';
 
 export default function App() {
-  const [animated, setAnimated] = useState({
-    width: new Animated.Value(0)
-  })
+  const [nome, setNome] = useState('Everson')
 
-  Animated.timing(
-    animated.width, {
-      toValue: 100,
-      duration: 5000
-    }
-  ).start()
-
-  let porcentAnimated = animated.width.interpolate({
-    inputRange: [0, 100],
-    outputRange: ['0%', '100%']
-  })
   return (
     <View style={styles.container}>
-      <Animated.View style={{backgroundColor: '#4169E1', width: porcentAnimated, height: 25}}></Animated.View>
+      <TouchableOpacity style={styles.btn} onPress={() => setNome('Everson (alterado)')}>
+        <Text style={styles.btnText}>Altera nome</Text>
+      </TouchableOpacity>
+      <Text style={styles.texto}>Olá {nome}</Text>
     </View >
   );
 }
@@ -28,6 +18,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'flex-start'
+    alignItems: 'center'
+  },
+  texto: {
+    color: '#000',
+    fontSize: 40,
+    textAlign: 'center'
+  },
+  btn: {
+    backgroundColor: '#222',
+    padding: 5
+  },
+  btnText: {
+    fontSize: 15,
+    color: '#FFF'
   }
 });
