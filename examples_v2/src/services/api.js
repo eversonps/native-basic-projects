@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: '// https://free.currencyconverterapi.com/api/v5/'
+  baseURL: 'https://viacep.com.br/ws/'
 })
 
 export default api

@@ -1,59 +1,112 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { StyleSheet, View, Text, Switch, TextInput, Button, Modal, Image, TouchableOpacity, FlatList, Keyboard, ActivityIndicator, Animated } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, Switch, TextInput, Button, Modal, Image, TouchableOpacity, FlatList, Keyboard, ActivityIndicator, Animated } from 'react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from "./services/api"
+
 export default function App() {
-  const [text, setText] = useState('')
-  const [nome, setNome] = useState('Everson')
+  const [cep, setCep] = useState("")
+  const [addressUser, setAddressUser] = useState(null)
 
-  const inputRef = useRef(null)
+  const inputRef = useRef()
 
-  useEffect(async () => {
-    await AsyncStorage.setItem('nome', nome)
-  }, [nome])
+  function limpar(){
+    setCep("")
+    setAddressUser("")
+    inputRef.current.focus()
+  }
 
-  useEffect(async () => {
-    let nomeStorage = await AsyncStorage.getItem('nome')
-
-    if(nomeStorage !== null){
-      setNome(nomeStorage)
+  async function buscar(){
+    if(cep == ""){
+      alert("Digite um cep valido")
+      setCep("")
+      return
     }
-  }, [])
 
-  const letrasNomes = useMemo(() => (nome.length), [nome])
+    try {
+      const response = await api.get(cep + "/json")
+      setAddressUser(response.data)
+      Keyboard.dismiss
+    } catch(error){
+      console.log("erro: " + error)
+    }
+    
+
+  }
+
   return (
-    <View style={styles.container}>
-      <TextInput ref={inputRef} style={{padding: 5, borderWidth: 2}} placeholder='Digite seu nome' onChangeText={(text) => setText(text)} value={text}/>
-      <TouchableOpacity style={styles.btn} onPress={() => setNome(text)}>
-        <Text style={styles.btnText}>Altera nome</Text>
-      </TouchableOpacity>
-      <Text style={styles.texto}>Olá {nome}</Text>
-      <Text style={styles.texto}>{letrasNomes} letras</Text>
+    <SafeAreaView style={styles.container}> 
+      <View style={{alignItems: "center"}}>
+        <Text style={styles.text}>Insira o cep desejado:</Text>
+        <TextInput ref={inputRef} style={styles.input} value={cep} onChangeText={(text) => setCep(text)} placeholder="Ex: 000000" keyboardType='numeric'/>
+      </View>
 
-      <TouchableOpacity onPress={() => inputRef.current.focus()}>
-        <Text>Alterar nome</Text>
-      </TouchableOpacity>
-    </View >
+      <View style={styles.areaBtn}>
+        <TouchableOpacity style={[styles.botao, { backgroundColor: "#1d75cd"}]} onPress={buscar}>
+          <Text style={styles.botaoText}>Buscar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.botao, { backgroundColor: "#cd3e1d"}]} onPress={limpar}>
+          <Text style={styles.botaoText}>Limpar</Text>
+        </TouchableOpacity>
+      </View>
+
+      {addressUser && 
+        <View style={styles.resultado}>
+          <Text style={styles.textItem}>Cep: {addressUser.cep}</Text>
+          <Text style={styles.textItem}>Sigla: {addressUser.uf}</Text>
+          <Text style={styles.textItem}>Cidade: {addressUser.localidade}</Text>
+          <Text style={styles.textItem}>Bairro: {addressUser.bairro}</Text>
+          <Text style={styles.textItem}>Logradouro: {addressUser.logradouro}</Text>
+        </View>
+      }
+      
+
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
-  texto: {
-    color: '#000',
-    fontSize: 40,
-    textAlign: 'center'
-  },
-  btn: {
-    backgroundColor: '#222',
-    padding: 5
-  },
-  btnText: {
+  text: {
+    marginTop: 25,
+    marginBottom: 25,
     fontSize: 15,
-    color: '#FFF'
+    fontWeight: "bold"
+  },
+  input: {
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#DDD",
+    borderRadius: 5,
+    width: "80%",
+    padding: 10
+  },
+  areaBtn: {
+    alignItems: "center",
+    flexDirection: "row",
+    marginTop: 15,
+    justifyContent: "center"
+  },
+  botao: {
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 15,
+    marginRight: 5,
+    borderRadius: 5
+  },
+  botaoText: {
+    fontSize: 22,
+    color: "white"
+  },
+  textItem: {
+    fontSize: 22
+  },
+  resultado: {
+    marginTop: 15,
+    flex: 1,
+    textAlign: "center",
+    alignItems: "center"
   }
 });
