@@ -21,18 +21,37 @@ import {
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import Home from "./src/pages/Home"
+import About from "./src/pages/About"
+import Contact from './src/pages/Contact';
+
+const Stack = createNativeStackNavigator()
 
 const App = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={{textAlign: "center"}}>Ola, ola mundo</Text>
-      <FontAwesome name="home" size={25} color="#11118c" />
-      <FontAwesome name="user" size={25} color="#54a300" />
-      <TouchableOpacity style={styles.btnYoutube}>
-        <FontAwesome name="youtube" size={25} color="#FFF" />
-        <Text style={styles.btnText}>Acessar canal</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={Home} options={{
+          title: "Tela Inicio",
+          headerStyle: {
+            backgroundColor: "121212"
+          },
+          headerTintColor: "#FFF",
+          headerShown: false
+        }} />
+
+        <Stack.Screen name="Sobre" component={About} options={{
+          title: "Pagina sobre"
+        }}/>
+
+        <Stack.Screen name="Contato" component={Contact} options={{
+          title: "Contato"
+        }}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
@@ -41,17 +60,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: "center",
     justifyContent: "center"
-  },
-  btnYoutube: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'red',
-    borderRadius: 5
-  },
-  btnText: {
-    paddingLeft: 5,
-    color: '#FFF'
   }
 });
 
