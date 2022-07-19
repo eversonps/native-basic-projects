@@ -4,73 +4,48 @@ import firebase from './src/firebaseConnection';
 import Listagem from './src/Listagem'
 
 export default function App() {
-  const [user, setUser] = useState([])
-  const [loading, setLoading] = useState(true)
   const [dataForm, setDataForm] = useState({
-    nome: "",
-    cargo: ""
+    email: "",
+    password: ""
   })
 
-  useEffect(async () => {
-    await firebase.database().ref("usuarios").on("value", (snapshot) => {
-      setUser([])
-      snapshot.forEach((childItem) => {
-        let data = {
-          key: childItem.key,
-          nome: childItem.val().nome,
-          cargo: childItem.val().cargo
-        }
+  async function cadastrar(){
+    await firebase.auth().createUserWithEmailAndPassword(dataForm.email, dataForm.password).then((value) => {
+      alert("Usuario criado: " + value.user.email)
+    }).catch((error) => {
+      if(error.code === "auth/weak-password"){
+        alert("Sua senha deve ter pelo menos 6 caracteres")
+        return
+      }
 
-        setUser(oldArray => [...oldArray, data].reverse())
-        setLoading(false)
+      if(error.code === "auth/invalid-email"){
+        alert("Email invalido")
+        return
+      }
+
+      alert("Ops, algo deu errado!")
+      setDataForm({
+        email: "",
+        password: ""
       })
     })
-  }, [])
-
-  async function cadastrar(){
-    if(dataForm.nome !== '' && dataForm.cargo !== ''){
-      let usuarios = await firebase.database().ref('usuarios')
-      let chave = usuarios.push().key;
-
-      usuarios.child(chave).set({
-        nome: dataForm.nome,
-        cargo: dataForm.cargo
-      })
-
-      alert("Cadastrado com sucesso")
-      setDataForm({
-        nome: "",
-        cargo: ""
-      })
-    }
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.texto}>Nome:</Text>
+      <Text style={styles.texto}>Email:</Text>
       <TextInput underlineColorAndroid={"transparent"}
        value={dataForm.nome} style={styles.input} 
-       onChangeText={(texto) => setDataForm({...dataForm, nome: texto})}
+       onChangeText={(texto) => setDataForm({...dataForm, email: texto})}
       />
       
-      <Text style={styles.texto}>Cargo:</Text>
+      <Text style={styles.texto}>Senha:</Text>
       <TextInput underlineColorAndroid={"transparent"}
        value={dataForm.cargo} style={styles.input} 
-       onChangeText={(texto) => setDataForm({...dataForm, cargo: texto})}
+       onChangeText={(texto) => setDataForm({...dataForm, password: texto})}
       />
 
       <Button title="Novo Funcionario" onPress={cadastrar} />
-
-      {
-        loading ? 
-        ( 
-          <ActivityIndicator color="#121212" size={45} />
-        ) : 
-        (
-          <FlatList keyExtractor={item => item.key} data={user} renderItem={ ({item}) => <Listagem data={item} />}/>
-        )
-      }
-      
     </View>
   );
 }
