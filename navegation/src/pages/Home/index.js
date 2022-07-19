@@ -28,14 +28,14 @@ import { useNavigation } from '@react-navigation/native';
    const navigation = useNavigation()
 
 
-   function navegaSobre(){
-     navigation.navigate("Sobre")
+   function navegaDetalhes(){
+     navigation.navigate("Detalhes")
    }
 
    return (
      <SafeAreaView style={styles.container}>
        <Text style={{textAlign: "center"}}>TELA HOME</Text>
-       <Button title="Ir para sobre" onPress={() => navegaSobre()}/>
+       <Button title="Ir para sobre" onPress={() => navegaDetalhes()}/>
 
      </SafeAreaView>
    );
