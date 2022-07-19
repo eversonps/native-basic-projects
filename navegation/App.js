@@ -21,36 +21,45 @@ import {
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, TabActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
 
 import Home from "./src/pages/Home"
 import About from "./src/pages/About"
 import Contact from './src/pages/Contact';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-const Stack = createNativeStackNavigator()
-
+const Tab = createBottomTabNavigator()
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home} options={{
-          title: "Tela Inicio",
-          headerStyle: {
-            backgroundColor: "121212"
-          },
-          headerTintColor: "#FFF",
-          headerShown: false
-        }} />
-
-        <Stack.Screen name="Sobre" component={About} options={{
-          title: "Pagina sobre"
+      <Tab.Navigator screenOptions={{
+        headerShown: false,
+        tabBarHideOnKeyboard: true,
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: "#fff",
+        tabBarStyle: {
+          backgroundColor: "#202225",
+          borderTopWidth: 0
+        }
+      }}>
+        <Tab.Screen name="Home" component={Home} options={{
+          tabBarIcon: ({color, size}) => {
+            return <Feather name="home" color={color} size={size}/>
+          }
         }}/>
-
-        <Stack.Screen name="Contato" component={Contact} options={{
-          title: "Contato"
+        <Tab.Screen name="Sobre" component={About} options={{
+          tabBarIcon: ({color, size}) => {
+            return <Feather name="file-text" color={color} size={size}/>
+          }
         }}/>
-      </Stack.Navigator>
+        <Tab.Screen name="Contato" component={Contact} options={{
+          tabBarIcon: ({color, size}) => {
+            return <Feather name="phone-call" color={color} size={size}/>
+          }
+        }}/>
+      </Tab.Navigator>
     </NavigationContainer>
   );
 };

@@ -28,8 +28,6 @@ import { useNavigation, StackActions } from '@react-navigation/native';
    return (
      <SafeAreaView style={styles.container}>
        <Text style={{textAlign: "center"}}>CONTATO</Text>
-       <Button title="Voltar tela anterior" onPress={() => navigation.goBack()}/>  
-       <Button title="Voltar home" onPress={() => navigation.dispatch(StackActions.popToTop())}/> 
      </SafeAreaView>
    );
  };

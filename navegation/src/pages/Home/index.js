@@ -29,7 +29,7 @@ import { useNavigation } from '@react-navigation/native';
 
 
    function navegaSobre(){
-     navigation.navigate("Sobre", {nome: "Everson", email: "eversonpereiraofc@gmail.com"})
+     navigation.navigate("Sobre")
    }
 
    return (
