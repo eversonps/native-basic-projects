@@ -5,40 +5,50 @@ import Listagem from './src/Listagem'
 
 export default function App() {
   const [dataForm, setDataForm] = useState({
+    nome: "",
     email: "",
     password: ""
   })
 
-  async function logar(){
-    await firebase.auth().signInWithEmailAndPassword(dataForm.email, dataForm.password).then((value) => {
-      alert("Bem vindo: " + value.user.email)
-    }).catch((error) => {
-      alert("Ops, algo deu errado!")
-    })
-  }
+  async function cadastrar(){
+    await firebase.auth().createUserWithEmailAndPassword(dataForm.email, dataForm.password).then((value) => {
+      // alert(value.user.uid)
+      firebase.database().ref("usuarios").child(value.user.uid).set({
+        nome: dataForm.nome,
+      })
 
-  async function logout(){
-    await firebase.auth().signOut()
-    
-    alert("Deslogado com sucesso!")
+      alert("Usuario criado com sucesso!")
+      setDataForm({
+        nome: "",
+        email: "",
+        password: ""
+      })
+    }).catch((error) => {
+      alert("Algo deu errado")
+    })
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.texto}>Email:</Text>
+      <Text style={styles.texto}>Nome:</Text>
       <TextInput underlineColorAndroid={"transparent"}
        value={dataForm.nome} style={styles.input} 
+       onChangeText={(texto) => setDataForm({...dataForm, nome: texto})}
+      />
+
+      <Text style={styles.texto}>Email:</Text>
+      <TextInput underlineColorAndroid={"transparent"}
+       value={dataForm.email} style={styles.input} 
        onChangeText={(texto) => setDataForm({...dataForm, email: texto})}
       />
       
       <Text style={styles.texto}>Senha:</Text>
       <TextInput underlineColorAndroid={"transparent"}
-       value={dataForm.cargo} style={styles.input} 
+       value={dataForm.password} style={styles.input} 
        onChangeText={(texto) => setDataForm({...dataForm, password: texto})}
       />
 
-      <Button title="Acessar" onPress={logar} />
-      <Button title="Deslogar" onPress={logout} />
+      <Button title="Acessar" onPress={cadastrar} />
     </View>
   );
 }
