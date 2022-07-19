@@ -9,26 +9,18 @@ export default function App() {
     password: ""
   })
 
-  async function cadastrar(){
-    await firebase.auth().createUserWithEmailAndPassword(dataForm.email, dataForm.password).then((value) => {
-      alert("Usuario criado: " + value.user.email)
+  async function logar(){
+    await firebase.auth().signInWithEmailAndPassword(dataForm.email, dataForm.password).then((value) => {
+      alert("Bem vindo: " + value.user.email)
     }).catch((error) => {
-      if(error.code === "auth/weak-password"){
-        alert("Sua senha deve ter pelo menos 6 caracteres")
-        return
-      }
-
-      if(error.code === "auth/invalid-email"){
-        alert("Email invalido")
-        return
-      }
-
       alert("Ops, algo deu errado!")
-      setDataForm({
-        email: "",
-        password: ""
-      })
     })
+  }
+
+  async function logout(){
+    await firebase.auth().signOut()
+    
+    alert("Deslogado com sucesso!")
   }
 
   return (
@@ -45,7 +37,8 @@ export default function App() {
        onChangeText={(texto) => setDataForm({...dataForm, password: texto})}
       />
 
-      <Button title="Novo Funcionario" onPress={cadastrar} />
+      <Button title="Acessar" onPress={logar} />
+      <Button title="Deslogar" onPress={logout} />
     </View>
   );
 }
