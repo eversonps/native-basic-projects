@@ -32,11 +32,15 @@ import { useNavigation } from '@react-navigation/native';
      navigation.navigate("Detalhes")
    }
 
+   function abrirDrawer(){
+    navigation.openDrawer()
+  }
+
    return (
      <SafeAreaView style={styles.container}>
        <Text style={{textAlign: "center"}}>TELA HOME</Text>
-       <Button title="Ir para sobre" onPress={() => navegaDetalhes()}/>
-
+       <Button title="Ir para detalhes" onPress={() => navegaDetalhes()}/>
+       <Button title="Abrir Drawer" onPress={() => abrirDrawer()}/>
      </SafeAreaView>
    );
  };
