@@ -1,21 +1,71 @@
-import { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, FlatList, Alert, Keyboard } from 'react-native';
 import Login from './src/components/login';
 
 import TaskList from './src/components/TaskList'
+import firebase from './src/services/firebaseConnection';
 
 export default function App() {
-  let tasks = [
-    { key: '1', nome: 'Tomar café da manhã' },
-    { key: '2', nome: 'Estudar JS' }
-  ]
-
   const [user, setUser] = useState(null)
+  const [tasks, setTasks] = useState([])
+
   const [newTask, setNewTask] = useState('')
+
+  function handleDelete(key){
+    console.log(key)
+  }
+
+  function handleEdit(data){
+    console.log(data)
+  }
+
+  function handleAdd(){
+    if(!newTask){
+      return
+    }
+
+    let tarefas = firebase.database().ref("tarefas").child(user);
+    let chave = tarefas.push().key
+
+    tarefas.child(chave).set({
+      nome: newTask
+    }).then(()=> {
+      const data = {
+        key: chave,
+        nome: newTask
+      }
+
+      setTasks(oldTasks => [...oldTasks, data])
+    }).catch((err) => {
+      alert("ERRO! Nao foi possivel criar sua tarefa.")
+    })
+
+    Keyboard.dismiss()
+    setNewTask("")
+  }
 
   if(!user){
     return <Login changeStatus={(user) => setUser(user)}/>
   }
+
+  useEffect(async () => {
+    if(!user){
+      return
+    }
+
+    await firebase.database().ref("tarefas").child(user).once("value", (snapshot) => {
+      setTasks([])
+
+      snapshot?.forEach((childItem) => {
+        let data = {
+          key: childItem.key,
+          nome: childItem.val().nome
+        }
+
+        setTasks(oldTasks => [...oldTasks, data])
+      })
+    })
+  }, [user])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -27,7 +77,7 @@ export default function App() {
       onChangeText={(text) => setNewTask(text)}
       />
       
-      <TouchableOpacity style={styles.buttonAdd}>
+      <TouchableOpacity style={styles.buttonAdd} onPress={handleAdd}>
         <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>
      </View>
@@ -36,7 +86,7 @@ export default function App() {
       data={tasks}
       keyExtractor={ item => item.key }
       renderItem={({item}) => (
-        <TaskList data={item}/>
+        <TaskList data={item} deleteItem={handleDelete} editItem={handleEdit}/>
       )}
      />
     </SafeAreaView>
