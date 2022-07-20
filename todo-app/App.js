@@ -12,7 +12,12 @@ export default function App() {
   const [newTask, setNewTask] = useState('')
 
   function handleDelete(key){
-    console.log(key)
+    firebase.database().ref("tarefas").child(user).child(key).remove().then(() => {
+      const findTasks = tasks.filter(item => item.key !== key)
+      setTasks(findTasks)
+    }).catch((e) => {
+      alert("Nao foi possivel excluir sua tarefa")
+    })
   }
 
   function handleEdit(data){
@@ -44,10 +49,6 @@ export default function App() {
     setNewTask("")
   }
 
-  if(!user){
-    return <Login changeStatus={(user) => setUser(user)}/>
-  }
-
   useEffect(async () => {
     if(!user){
       return
@@ -67,6 +68,10 @@ export default function App() {
     })
   }, [user])
 
+  if(!user){
+    return <Login changeStatus={(user) => setUser(user)}/>
+  }
+  
   return (
     <SafeAreaView style={styles.container}>
      <View style={styles.containerTask}>
