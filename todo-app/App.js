@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, FlatList, Alert, Keyboard } from 'react-native';
 import Login from './src/components/login';
 
 import TaskList from './src/components/TaskList'
 import firebase from './src/services/firebaseConnection';
 
+import { Feather } from '@expo/vector-icons';
 export default function App() {
   const [user, setUser] = useState(null)
   const [tasks, setTasks] = useState([])
+  const [key, setKey] = useState("")
+  const inputRef = useRef(null)
 
   const [newTask, setNewTask] = useState('')
 
@@ -21,11 +24,37 @@ export default function App() {
   }
 
   function handleEdit(data){
-    console.log(data)
+    setKey(data.key)
+    setNewTask(data.nome)
+    inputRef.current.focus()
+  }
+
+  function cancelEdit(){
+    setKey("")
+    setNewTask("")
+    Keyboard.dismiss()
   }
 
   function handleAdd(){
     if(!newTask){
+      return
+    }
+    
+    if(key !== ''){
+      firebase.database().ref('tarefas').child(user).child(key).update({
+        nome: newTask
+      }).then(() => {
+        const taskIndex = tasks.findIndex(item => item.key === key)
+        
+        let taskClone = tasks
+        taskClone[taskIndex].nome = newTask
+
+        setTasks([...taskClone])
+      })
+
+      Keyboard.dismiss()
+      setNewTask('')
+      setKey('')
       return
     }
 
@@ -71,15 +100,26 @@ export default function App() {
   if(!user){
     return <Login changeStatus={(user) => setUser(user)}/>
   }
-  
+
   return (
     <SafeAreaView style={styles.container}>
+      { key.length > 0 && (
+        <View>
+          <TouchableOpacity onPress={() => cancelEdit()}>
+            <Feather name="x-circle" size={20} color={"#FF0000"}/>
+          </TouchableOpacity>
+          <Text style={{marginLeft: 5, color: '#FF00000'}}>Voce esta editando esta tarefa</Text>
+        </View>
+      )}
+     
+
      <View style={styles.containerTask}>
       <TextInput 
       style={styles.input} 
       value={newTask} 
       placeholder={"O que vai fazer hoje?"}
       onChangeText={(text) => setNewTask(text)}
+      ref={inputRef}
       />
       
       <TouchableOpacity style={styles.buttonAdd} onPress={handleAdd}>
