@@ -42,6 +42,12 @@ export default function App(){
       </View>
       <MapView style={styles.mapa}
        region={region} 
+       // standard | satellite | hybrid
+       mapType="standard"
+       // scrollEnabled={false}
+       // zoomEnabled={false}
+       // rotateEnabled={false}
+       // showsTraffic={true}
        /* onMapReady={} */ 
        onRegionChangeComplete={changedMap} 
        onPress={(e) => alert('Latitude Clicada: ' + e.nativeEvent.coordinate.latitude)}
