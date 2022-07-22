@@ -9,7 +9,7 @@
 // AIzaSyDAMORbQ5M-iCHW_80hQXpOo9WcahKlBtg
 
 import React, { useState } from 'react';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 
 import {
   SafeAreaView,
@@ -30,6 +30,11 @@ export default function App(){
     longitudeDelta: 0.0421
   })
 
+  const [markers, setMarkers] = useState([
+    {key: 0, coords: {latitude: -15.8080374, longitude: -47.8750231}, image: require('./src/assets/images/carro_left.png')},
+    {key: 1, coords: {latitude: -15.8380374, longitude: -47.8850231}, image: require('./src/assets/images/carro_right.png')}
+  ])
+
   function changedMap(regiao){
     setRegion({...region, longitude: regiao.longitude, latitude: regiao.latitude})
   }
@@ -42,16 +47,14 @@ export default function App(){
       </View>
       <MapView style={styles.mapa}
        region={region} 
-       // standard | satellite | hybrid
-       mapType="standard"
-       // scrollEnabled={false}
-       // zoomEnabled={false}
-       // rotateEnabled={false}
-       // showsTraffic={true}
-       /* onMapReady={} */ 
        onRegionChangeComplete={changedMap} 
        onPress={(e) => alert('Latitude Clicada: ' + e.nativeEvent.coordinate.latitude)}
-       />
+      > 
+        {markers.map(marker => {
+          return <Marker image={marker.image} coordinate={marker.coords} key={marker.key} /* pinColor={marker.pinColor} */ />
+        })
+        }
+      </MapView>
     </SafeAreaView>
   );
 };
