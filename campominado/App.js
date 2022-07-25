@@ -19,11 +19,17 @@ import {
   View,
 } from 'react-native';
 
+import Field from './src/components/Field';
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.welcome}>Iniciando o mines</Text>
       <Text style={styles.instructions}>Tamanho da grade: {params.getRowsAmount()}x{params.getColumnsAmount()}</Text>
+      <Field />
+      <Field opened nearMines={1} />
+      <Field opened nearMines={2} />
+      <Field opened nearMines={4} />
+      <Field opened nearMines={7} />
     </SafeAreaView>
   );
 };
