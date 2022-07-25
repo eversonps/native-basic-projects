@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import params from './src/params';
 
 import {
   SafeAreaView,
@@ -21,7 +22,8 @@ import {
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Ois</Text>
+      <Text style={styles.welcome}>Iniciando o mines</Text>
+      <Text style={styles.instructions}>Tamanho da grade: {params.getRowsAmount()}x{params.getColumnsAmount()}</Text>
     </SafeAreaView>
   );
 };
@@ -29,6 +31,12 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center'
   }
 });
 
