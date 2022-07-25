@@ -6,14 +6,17 @@ import params from '../params'
 
 import Mine from "./Mine";
 
-export default function Field({mined, opened, nearMines, exploded}){
+import Flag from "./Flag";
+export default function Field({mined, opened, nearMines, exploded, flagged}){
     const styleField = [styles.field]
 
     if(opened) styleField.push(styles.opened)
 
     if(exploded) styleField.push(styles.exploded)
 
-    if(styleField.length === 1) styleField.push(styles.regular)
+    if(flagged) styleField.push(styles.flagged)
+
+    if(!opened && !exploded) styleField.push(styles.regular)
 
     let color = null 
 
@@ -28,6 +31,7 @@ export default function Field({mined, opened, nearMines, exploded}){
         <View style={styleField}>
             {!mined && opened && nearMines > 0 && <Text style={[styles.label, { color: color }]}>{nearMines}</Text>}
             {mined && opened && <Mine />}
+            {flagged && !opened && <Flag />}
         </View>
     )
 }
