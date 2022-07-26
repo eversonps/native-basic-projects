@@ -9,6 +9,9 @@
 import React, { useState } from 'react';
 import params from './src/params';
 
+import Header from './src/components/Header';
+import LevelSelection from './src/screens/LevelSelection';
+
 import {
   SafeAreaView,
   ScrollView,
@@ -24,21 +27,24 @@ import Field from './src/components/Field';
 
 import MineField from './src/components/MineField';
 
-import { createMinedBoard, invertFlag, cloneBoard, openField, hadExplosion, wonGame, showMines } from './src/functions';
+import { createMinedBoard, invertFlag, cloneBoard, openField, hadExplosion, wonGame, showMines, flagsUsed } from './src/functions';
 
 export default function App() {
   const cols = params.getColumnsAmount()
   const rows = params.getRowsAmount()
 
+  const initialState = {
+    board: createMinedBoard(rows, cols, minesAmount()),
+    won: false, 
+    lost: false,
+    showLevelSelect: false
+  }
+
   function minesAmount(){
     return Math.ceil(cols * rows * params.difficultLevel)
   }
 
-  const [state, setState] = useState({
-    board: createMinedBoard(rows, cols, minesAmount()),
-    won: false, 
-    lost: false
-  })
+  const [state, setState] = useState(initialState)
 
   function onOpenField(row, column) {
     const board = cloneBoard(state.board)
@@ -55,7 +61,7 @@ export default function App() {
       Alert.alert('Parabens', 'Voce venceu!')
     }
 
-    setState({board, lost, won})
+    setState({board, lost, won, showLevelSelect: state.showLevelSelect})
   }
 
   function onSelectField(row, column) {
@@ -68,14 +74,18 @@ export default function App() {
       Alert.alert('Parabens!', 'Voce venceu!')
     }
 
-    setState({ ...state, board, won })
+    setState({ ...state, board, won, showLevelSelect: state.showLevelSelect })
+  }
+
+  function onLevelSelected(level){
+    params.difficultLevel = level
+    setState(initialState)
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.welcome}>Iniciando o mines</Text>
-      <Text style={styles.instructions}>Tamanho da grade: {params.getRowsAmount()}x{params.getColumnsAmount()}</Text>
-      
+      <LevelSelection isVisible={state.showLevelSelect} onLevelSelected={onLevelSelected} onCancel={() => setState({...state, showLevelSelect: false})}  />
+      <Header flagsLeft={minesAmount() - flagsUsed(state.board)} newGame={() => setState(initialState)} onFlagPress={() => setState({...state, showLevelSelect: true})}/>
       <View style={styles.board}>
         <MineField board={state.board} onOpenField={onOpenField} onSelectField={onSelectField}/>
       </View>
