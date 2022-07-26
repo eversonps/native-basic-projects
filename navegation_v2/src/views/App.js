@@ -21,11 +21,15 @@ import {
 import TextoCentral from '../components/TextoCentral';
 
 import TelaA from './TelaA';
+import TelaB from './TelaB';
+import TelaC from './TelaC';
 
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <TelaA />
+      <TelaB />
+      <TelaC />
     </SafeAreaView>
   );
 };
@@ -33,7 +37,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
 });
