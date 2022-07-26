@@ -17,13 +17,14 @@ import {
   Text,
   useColorScheme,
   View,
+  Alert
 } from 'react-native';
 
 import Field from './src/components/Field';
 
 import MineField from './src/components/MineField';
 
-import { createMinedBoard } from './src/functions';
+import { createMinedBoard, invertFlag, cloneBoard, openField, hadExplosion, wonGame, showMines } from './src/functions';
 
 export default function App() {
   const cols = params.getColumnsAmount()
@@ -33,9 +34,42 @@ export default function App() {
     return Math.ceil(cols * rows * params.difficultLevel)
   }
 
-  const [board, setBoard] = useState(createMinedBoard(rows, cols, minesAmount()))
+  const [state, setState] = useState({
+    board: createMinedBoard(rows, cols, minesAmount()),
+    won: false, 
+    lost: false
+  })
 
-  
+  function onOpenField(row, column) {
+    const board = cloneBoard(state.board)
+    openField(board, row, column)
+    const lost = hadExplosion(board)
+    const won = wonGame(board)
+
+    if(lost){
+      showMines(board)
+      Alert.alert('Perdeu!', 'Voce perdeu. Tente novamente :)')
+    }
+
+    if(won){
+      Alert.alert('Parabens', 'Voce venceu!')
+    }
+
+    setState({board, lost, won})
+  }
+
+  function onSelectField(row, column) {
+    const board = cloneBoard(state.board)
+    invertFlag(board, row, column)
+
+    const won = wonGame(board)
+
+    if (won) {
+      Alert.alert('Parabens!', 'Voce venceu!')
+    }
+
+    setState({ ...state, board, won })
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,7 +77,7 @@ export default function App() {
       <Text style={styles.instructions}>Tamanho da grade: {params.getRowsAmount()}x{params.getColumnsAmount()}</Text>
       
       <View style={styles.board}>
-        <MineField board={board}/>
+        <MineField board={state.board} onOpenField={onOpenField} onSelectField={onSelectField}/>
       </View>
     </SafeAreaView>
   );

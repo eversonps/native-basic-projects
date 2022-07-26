@@ -55,7 +55,7 @@ const getNeighbors = (board, row, column) => {
         columns.forEach(c => {
             const diferent = r !== row || c !== column
             const validRow = r >= 0 && r < board.length
-            const validColumn = c => 0 && c < board[0].length
+            const validColumn = c >= 0 && c < board[0].length
 
             if(diferent && validColumn && validRow){
                 neighbors.push(board[r][c])
@@ -82,7 +82,7 @@ const openField = (board, row, column) => {
             getNeighbors(board, row, column).forEach(n => openField(board, n.row, n.column))
         }else {
             const neighbors = getNeighbors(board, row, column)
-            field.nearMines = neighbors.filter(n => n.mined)
+            field.nearMines = neighbors.filter(n => n.mined).length
         }
     }
 }
@@ -96,4 +96,10 @@ const pending = field => (field.mined && !field.flagged) || (!field.mined && !fi
 const wonGame = board => fields(board).filter(pending).length === 0
 
 const showMines = board => fields(board).filter(field => field.mined).forEach(field => field.opened = true)
-export { createMinedBoard }
+
+const invertFlag = (board, row, column) => {
+    const field = board[row][column]
+    field.flagged = !field.flagged
+}
+
+export { createMinedBoard, invertFlag, cloneBoard, openField, hadExplosion, wonGame, showMines }
